@@ -12,8 +12,3 @@ class Room(models.Model) :
     def get_status(self):
         return "On" if self.status else "Off"
     
-class Booking(models.Model) :
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    # User
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
