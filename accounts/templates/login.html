@@ -1,0 +1,16 @@
+<form method="post">
+    {% csrf_token %}
+    {% if error %}<p style="color:red">{{ error }}</p>{% endif %}
+
+    <label>Username:</label>
+    <input type="text" name="username" required><br>
+
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <button type="submit">Login</button>
+</form>
+
+<a href="{% url 'register' %}">Register</a>
