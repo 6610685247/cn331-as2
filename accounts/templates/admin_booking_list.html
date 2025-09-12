@@ -1,0 +1,38 @@
+<h1>Booking Management</h1>
+
+<form method="get" action="{% url 'admin_booking_filter' %}">
+    <label>Room:</label>
+    <select name="room">
+        <option value="">All</option>
+        {% for room in rooms %}
+        <option value="{{ room.id }}">{{ room.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Start:</label>
+    <input type="datetime-local" name="start">
+
+    <label>End:</label>
+    <input type="datetime-local" name="end">
+
+    <button type="submit">Filter</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Room</th>
+        <th>User</th>
+        <th>Start</th>
+        <th>End</th>
+    </tr>
+    {% if bookings %}
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.room.name }}</td>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.start_time }}</td>
+            <td>{{ booking.end_time }}</td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+</table>
