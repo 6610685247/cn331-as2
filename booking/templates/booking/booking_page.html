@@ -11,28 +11,41 @@
         <form action="{% url 'date_submit' %}" method="post">
             {% csrf_token %}
             <label for="date">Date:</label>
-            <input type="date" id="date" name="selectedDate">
+            <input type="date" id="date" name="selectedDate" required>
             <input type="submit" value="Submit">
         </form>
 
         {% if selected_date %}
             <h3>{{selected_date}}</h3>
         {% endif %}
+
+        <h3>Room 101</h3>
         
-        <h3>Room1</h3>
+        {% comment %} <form action="{% url 'room_select' %}" method="post">
+            {% csrf_token %}
+            <label for="room">Room :</label>
+            <select name="selected_room" id="date">
+                <option value="">-- Select room --</option>
+                <option value="101">101</option>
+                <option value="102">102</option>
+                <option value="103">103</option>
+                <option value="104">104</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form> {% endcomment %}
 
         <h4>9:00-10:00</h4>
 
         <form method="POST" action="{% url 'book' %}">
             {% csrf_token %}
             <input type="hidden" name="room_id" value='101'>
-            <input type="hidden" name="date" value="2025-08-01">
+            <input type="hidden" name="date" value="{{ selected_date }}">
             <input type="hidden" name="start_time" value="09:00:00">
             <input type="hidden" name="end_time" value="10:00:00">
             <button type="submit">Book</button>
         </form>
 
-        <h4>17:00-18:00</h4>
+        <h4>10:00-11:00</h4>
         <button>book</button>
     </body>
 </html>

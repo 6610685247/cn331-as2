@@ -22,10 +22,8 @@ from booking import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.main_page, name="main"),
     path('book/', views.booking_view, name='booking'),
     path('book/booking/', views.book_room, name="book"),
-    path('book/date_submit', views.get_date, name='date_submit')
-    
+    path('book/date_submit', views.get_date, name='date_submit'),
     path('', include("accounts.urls")),
 ]

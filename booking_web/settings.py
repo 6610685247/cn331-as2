@@ -57,7 +57,7 @@ ROOT_URLCONF = 'booking_web.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / "templates"],
+        'DIRS': [ BASE_DIR / "templates" / "booking_web"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

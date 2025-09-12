@@ -31,7 +31,7 @@ def book_room(request):
         ).exists()
 
         if overlap:
-            return redirect('main')
+            return redirect('booking')
         Booking.objects.create(room_id=id, start_time=start_date, end_time=end_date)
         return redirect('booking') 
     else:
@@ -40,4 +40,10 @@ def book_room(request):
 def get_date(request):
     if request.method == "POST":
         date = request.POST.get("selectedDate")
+        request.session["selected_date"] = date  
         return render(request, 'booking/booking_page.html', {'selected_date' : date})
+    
+# def room_select(request):
+#     if request.method == "POST":
+#         room = request.POST.get("selected_room")
+#         return render(request, 'booking/booking_page.html', {'selected_room' : room})

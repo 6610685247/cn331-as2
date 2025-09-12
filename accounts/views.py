@@ -4,10 +4,6 @@ from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from django.contrib.auth.decorators import user_passes_test
-from .models import Booking, Room
-
-
-
 
 def home(request):
     return render(request, 'home.html')
@@ -48,26 +44,3 @@ def profile(request):
 
 def is_admin(user):
     return user.is_superuser
-
-@user_passes_test(is_admin)
-def admin_booking_list(request):
-    rooms = Room.objects.all()
-    return render(request, 'admin_booking_list.html', {'rooms': rooms})
-
-@user_passes_test(is_admin)
-def admin_booking_filter(request):
-    room_id = request.GET.get('room')
-    start = request.GET.get('start')
-    end = request.GET.get('end')
-
-    bookings = Booking.objects.all()
-
-    if room_id:
-        bookings = bookings.filter(room_id=room_id)
-    if start:
-        bookings = bookings.filter(start_time__gte=start)
-    if end:
-        bookings = bookings.filter(end_time__lte=end)
-
-    rooms = Room.objects.all()
-    return render(request, 'admin_booking_list.html', {'rooms': rooms, 'bookings': bookings})
