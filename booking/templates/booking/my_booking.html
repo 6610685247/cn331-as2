@@ -1,28 +1,47 @@
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 {% block content %}
-<h2>My Bookings</h2>
+<div class="max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">My Bookings</h2>
 
-{% if bookings %}
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Room</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Booked On</th>
-        </tr>
-        {% for booking in bookings %}
-        <tr>
-            <td>{{ booking.room.name }}</td>
-            <td>{{ booking.start_time }}</td>
-            <td>{{ booking.end_time }}</td>
-            <td>{{ booking.created_at }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-{% else %}
-    <p>You don’t have any bookings yet.</p>
-{% endif %}
+    {% if bookings %}
+    <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Room</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Start Time</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">End Time</th>
+                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Booked On</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for booking in bookings %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ booking.room.name }}</td>
+                    <td class="px-6 py-4">{{ booking.start_time }}</td>
+                    <td class="px-6 py-4">{{ booking.end_time }}</td>
+                    <td class="px-6 py-4">{{ booking.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-500 mt-4 text-center">You don’t have any bookings yet.</p>
+    {% endif %}
 
-<a href="{% url 'room_select' %}">Make a new booking</a>
+    <div class="mt-6 text-center">
+        <a href="{% url 'room_select' %}" 
+           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            Make a New Booking
+        </a>
+    </div>
+</div>
 {% endblock %}
