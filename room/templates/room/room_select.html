@@ -1,22 +1,33 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Room select</title>
-    </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Select</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center font-sans">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">Select a Room</h1>
 
-    <body>
-        <form method="POST">
+        <form method="POST" class="space-y-4">
             {% csrf_token %}
-            <label for="room">Room :</label>
-            <select name="selected_room">
-                <option value="">-- Select room --</option>
-                <option value="101">101</option>
-                <option value="102">102</option>
-                <option value="103">103</option>
-                <option value="104">104</option>
-            </select>
-            <button type="submit" name="action" value="room_select"> Submit</button>
+            <div class="flex flex-col">
+                <label for="room" class="mb-1 font-medium">Room:</label>
+                <select name="selected_room" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <option value="">-- Select room --</option>
+                    <option value="101">101</option>
+                    <option value="102">102</option>
+                    <option value="103">103</option>
+                    <option value="104">104</option>
+                </select>
+            </div>
+
+            <button type="submit" name="action" value="room_select"
+                    class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                Submit
+            </button>
         </form>
-    </body>
+    </div>
+</body>
 </html>

@@ -1,62 +1,56 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Booking Page</title>
-    </head>
-    <body>
-        <h1>Booking Web</h1>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <div class="max-w-3xl mx-auto p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Booking Web</h1>
         
-        <h2>Room {{ room_num }}</h2>
+        <h2 class="text-xl font-semibold mb-4">Room {{ room_num }}</h2>
 
-        <form method="POST">
+        <!-- Date Selection -->
+        <form method="POST" class="mb-6 flex items-end gap-4">
             {% csrf_token %}
-            <label for="date">Date:</label>
-            <input type="date" name="booking_date" required>
-            <button type="submit" name="action" value="set_date">
+            <div class="flex flex-col">
+                <label for="date" class="mb-1 font-medium">Date:</label>
+                <input type="date" name="booking_date" required
+                       class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            <button type="submit" name="action" value="set_date"
+                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
                 Submit
             </button>
         </form>
 
-        <h3>Date {{ booking_date }}</h3>
-        
-        <h3>Booking Table</h3>
+        {% if booking_date %}
+        <h3 class="text-lg font-medium mb-4">Date: {{ booking_date }}</h3>
 
-        <h4>9:00-10:00</h4>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="room_id" value={{ room_num }}>
-            <input type="hidden" name="date" value="{{ booking_date }}">
-            <input type="hidden" name="start_time" value="09:00:00">
-            <input type="hidden" name="end_time" value="10:00:00">
-            <button type="submit" name="action" value="book">
-                Book
-            </button>
-        </form>
+        <h3 class="text-lg font-semibold mb-2">Booking Table</h3>
 
-        <h4>10:00-11:00</h4>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="room_id" value={{ room_num }}>
-            <input type="hidden" name="date" value="{{ booking_date }}">
-            <input type="hidden" name="start_time" value="10:00:00">
-            <input type="hidden" name="end_time" value="11:00:00">
-            <button type="submit" name="action" value="book">
-                Book
-            </button>
-        </form>
-
-        <h4>11:00-12:00</h4>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="room_id" value={{ room_num }}>
-            <input type="hidden" name="date" value="{{ booking_date }}">
-            <input type="hidden" name="start_time" value="11:00:00">
-            <input type="hidden" name="end_time" value="12:00:00">
-            <button type="submit" name="action" value="book">
-                Book
-            </button>
-        </form>
-
-    </body>
+        <!-- Time slots -->
+        <div class="space-y-4">
+            {% 'for x in y': for slot in [('09:00:00', '10:00:00'), ('10:00:00', '11:00:00'), ('11:00:00', '12:00:00')]%}
+            <div class="flex items-center justify-between bg-white p-4 rounded shadow">
+                <span class="font-medium">{{ slot.0|slice:":5" }} - {{ slot.1|slice:":5" }}</span>
+                <form method="POST" class="m-0">
+                    {% csrf_token %}
+                    <input type="hidden" name="room_id" value="{{ room_num }}">
+                    <input type="hidden" name="date" value="{{ booking_date }}">
+                    <input type="hidden" name="start_time" value="{{ slot.0 }}">
+                    <input type="hidden" name="end_time" value="{{ slot.1 }}">
+                    <button type="submit" name="action" value="book"
+                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                        Book
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
 </html>
