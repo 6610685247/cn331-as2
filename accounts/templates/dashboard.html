@@ -1,0 +1,35 @@
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<form method="get">
+    <label>Start Time:</label>
+    <input type="datetime-local" name="start" value="{{ request.GET.start }}">
+    
+    <label>End Time:</label>
+    <input type="datetime-local" name="end" value="{{ request.GET.end }}">
+    
+    <button type="submit">Filter</button>
+</form>
+
+<hr>
+
+{% if bookings %}
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>User</th>
+            <th>Room</th>
+            <th>Time</th>
+        </tr>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.room.name }}</td>
+            <td>{{ booking.start_time }} → {{ booking.end_time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No bookings found for this period.</p>
+{% endif %}
+{% endblock %}
