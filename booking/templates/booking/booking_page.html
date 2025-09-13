@@ -6,46 +6,58 @@
     </head>
     <body>
         <h1>Booking Web</h1>
-        <h2>Booking Table</h2>
+        
+        <h2>Room {{ room_num }}</h2>
 
-        <form action="{% url 'date_submit' %}" method="post">
+        <form method="POST">
             {% csrf_token %}
             <label for="date">Date:</label>
-            <input type="date" id="date" name="selectedDate" required>
-            <input type="submit" value="Submit">
+            <input type="date" name="booking_date" required>
+            <button type="submit" name="action" value="set_date">
+                Submit
+            </button>
         </form>
 
-        {% if selected_date %}
-            <h3>{{selected_date}}</h3>
-        {% endif %}
-
-        <h3>Room 101</h3>
+        <h3>Date {{ booking_date }}</h3>
         
-        {% comment %} <form action="{% url 'room_select' %}" method="post">
-            {% csrf_token %}
-            <label for="room">Room :</label>
-            <select name="selected_room" id="date">
-                <option value="">-- Select room --</option>
-                <option value="101">101</option>
-                <option value="102">102</option>
-                <option value="103">103</option>
-                <option value="104">104</option>
-            </select>
-            <input type="submit" value="Submit">
-        </form> {% endcomment %}
+        <h3>Booking Table</h3>
 
         <h4>9:00-10:00</h4>
 
-        <form method="POST" action="{% url 'book' %}">
+        <form method="POST">
             {% csrf_token %}
-            <input type="hidden" name="room_id" value='101'>
-            <input type="hidden" name="date" value="{{ selected_date }}">
+            <input type="hidden" name="room_id" value={{ room_num }}>
+            <input type="hidden" name="date" value="{{ booking_date }}">
             <input type="hidden" name="start_time" value="09:00:00">
             <input type="hidden" name="end_time" value="10:00:00">
-            <button type="submit">Book</button>
+            <button type="submit" name="action" value="book">
+                Book
+            </button>
         </form>
 
         <h4>10:00-11:00</h4>
-        <button>book</button>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="room_id" value={{ room_num }}>
+            <input type="hidden" name="date" value="{{ booking_date }}">
+            <input type="hidden" name="start_time" value="10:00:00">
+            <input type="hidden" name="end_time" value="11:00:00">
+            <button type="submit" name="action" value="book">
+                Book
+            </button>
+        </form>
+
+        <h4>11:00-12:00</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="room_id" value={{ room_num }}>
+            <input type="hidden" name="date" value="{{ booking_date }}">
+            <input type="hidden" name="start_time" value="11:00:00">
+            <input type="hidden" name="end_time" value="12:00:00">
+            <button type="submit" name="action" value="book">
+                Book
+            </button>
+        </form>
+
     </body>
 </html>
