@@ -6,17 +6,17 @@
     </head>
 
     <body>
-        <form action="{% url 'room_select' %}" method="post">
+        <form method="POST">
             {% csrf_token %}
             <label for="room">Room :</label>
-            <select name="selected_room" id="date">
+            <select name="selected_room">
                 <option value="">-- Select room --</option>
                 <option value="101">101</option>
                 <option value="102">102</option>
                 <option value="103">103</option>
                 <option value="104">104</option>
             </select>
-            <input type="submit" value="Submit">
+            <button type="submit" name="action" value="room_select"> Submit</button>
         </form>
     </body>
 </html>
