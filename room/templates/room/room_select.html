@@ -9,8 +9,8 @@
         <form method="POST">
             {% csrf_token %}
             <label for="room">Room :</label>
-            <select name="selected_room">
-                <option value="">-- Select room --</option>
+            <select name="selected_room" required>
+                <option value="" disabled selected>-- Select room --</option>
                 <option value="101">101</option>
                 <option value="102">102</option>
                 <option value="103">103</option>

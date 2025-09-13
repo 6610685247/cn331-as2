@@ -14,7 +14,7 @@ def booking_view(request, room_number): #everything about req in booking view
     
     room_exist = Room.objects.filter(room_id=room_number).exists()
     if not room_exist:
-        return redirect("/")
+        return redirect("room_view")
     
     if request.method == "POST":
         action = request.POST.get("action")
