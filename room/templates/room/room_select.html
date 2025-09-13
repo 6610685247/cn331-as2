@@ -14,12 +14,11 @@
             {% csrf_token %}
             <div class="flex flex-col">
                 <label for="room" class="mb-1 font-medium">Room:</label>
-                <select name="selected_room" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <select name="selected_room" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
                     <option value="">-- Select room --</option>
-                    <option value="101">101</option>
-                    <option value="102">102</option>
-                    <option value="103">103</option>
-                    <option value="104">104</option>
+                    {% for room in rooms %}
+                        <option value="{{ room.room_id }}">{{ room.room_name|default:room.room_id }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
