@@ -1,0 +1,28 @@
+
+
+{% block content %}
+<h2>My Bookings</h2>
+
+{% if bookings %}
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Room</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Booked On</th>
+        </tr>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.room.name }}</td>
+            <td>{{ booking.start_time }}</td>
+            <td>{{ booking.end_time }}</td>
+            <td>{{ booking.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>You don’t have any bookings yet.</p>
+{% endif %}
+
+<a href="{% url 'room_select' %}">Make a new booking</a>
+{% endblock %}
