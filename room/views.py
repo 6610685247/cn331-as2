@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-def room_view(request):
+@login_required(login_url='login')
+def room_select(request):
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "room_select":

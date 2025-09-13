@@ -4,14 +4,16 @@ from django.utils import timezone
 from datetime import datetime, date
 from room.models import Room
 from booking.models import Booking
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def booking_view(request, room_number): #everything about req in booking view
+    
     context = {
             "room_num" : room_number,
             "booking_date" : timezone.localdate().strftime("%Y-%m-%d")
             }
-    
+        
     room_exist = Room.objects.filter(room_id=room_number).exists()
     if not room_exist:
         return redirect("/")
@@ -51,4 +53,15 @@ def booking_view(request, room_number): #everything about req in booking view
             Booking.objects.create(room_id=room_number, user=current_user, start_time=start_date, end_time=end_date)
         
     return render(request, "booking/booking_page.html", context)
-  
+
+@login_required(login_url='login')
+def my_booking(request):
+    bookings = Booking.objects.filter(user=request.user)
+    return render(request, "booking/my_booking.html", {"bookings": bookings})
+
+@login_required(login_url='login')
+def booking_page(request):
+    bookings = Booking.objects.filter(user=request.user)
+    return render(request, "booking/booking_page.html", {"bookings": bookings})
+    
+
