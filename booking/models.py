@@ -12,4 +12,4 @@ class Booking(models.Model) :
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.room_id} is booked by UserX ({self.start_time} - {self.end_time})"
+        return f"{self.room_id} is booked by { self.user } ({self.start_time} - {self.end_time})"

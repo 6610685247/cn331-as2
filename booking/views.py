@@ -29,6 +29,8 @@ def booking_page(request, room_number):
 
     book_date = today
 
+    
+
     if request.method == "POST":
         action = request.POST.get("action")
         if action == "book_today":
@@ -44,8 +46,11 @@ def booking_page(request, room_number):
             start_dt = make_aware(datetime.combine(book_date, datetime.strptime(start_time_str, "%H:%M").time()))
             end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end_time_str, "%H:%M").time()))
 
+
             if Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
                 messages.error(request, "This slot is already booked.")
+            elif Booking.objects.filter(user=request.user, start_time__date=book_date).exists():
+                messages.error(request, f"You already booked on {book_date}.")
             else:
                 Booking.objects.create(
                     room=room,
@@ -53,6 +58,8 @@ def booking_page(request, room_number):
                     start_time=start_dt,
                     end_time=end_dt
                 )
+
+                
                 messages.success(request, f"Booking confirmed for {book_date} {start_time_str}-{end_time_str}.")
 
     slots_info = []
@@ -84,6 +91,8 @@ def my_booking(request):
     bookings = Booking.objects.filter(user=request.user)
     now = timezone.now()
     return render(request, "booking/my_booking.html", {"bookings": bookings, "now": now})
+
+
 
 @login_required
 def cancel_booking(request, booking_id):
