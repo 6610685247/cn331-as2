@@ -9,15 +9,18 @@ from collections import defaultdict
 def room_select(request):
     rooms = Room.objects.all().order_by('floor', 'room_name')
 
-    rooms_by_floor = defaultdict(list)
+    # Serialize rooms into JSON-friendly dict
+    rooms_by_floor = {}
     for room in rooms:
-        rooms_by_floor[room.floor].append(room)
-    rooms_by_floor = dict(sorted(rooms_by_floor.items()))
+        rooms_by_floor.setdefault(room.floor, []).append({
+            "room_id": room.room_id,
+            "room_name": room.room_name
+        })
 
     if request.method == "POST":
         selected_room = request.POST.get("selected_room")
         if selected_room:
             return redirect(f"/room{selected_room}/")
-        
+
     return render(request, "room/room_select.html", {"rooms_by_floor": rooms_by_floor})
         
