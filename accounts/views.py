@@ -96,6 +96,12 @@ def admin_dashboard(request):
             room_id = request.POST.get("room_id")
             Room.objects.filter(room_id=room_id).delete()
             messages.success(request, f"Room {room_id} deleted successfully.")
+        elif "set_status_on" in request.POST:
+            room_id = request.POST.get("room_id")
+            Room.objects.filter(room_id=room_id).update(status=True)
+        elif "set_status_off" in request.POST:
+            room_id = request.POST.get("room_id")
+            Room.objects.filter(room_id=room_id).update(status=False)
 
         # Always redirect after POST to avoid resubmission
         return redirect("dashboard")

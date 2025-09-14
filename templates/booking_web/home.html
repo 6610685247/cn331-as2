@@ -1,18 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .box-container:hover .box {
+        flex: 1; /* ปรับขนาดกล่องทุกกล่องเล็กลงเมื่อ hover */
+      }
+      .box-container .box:hover {
+        flex: 3; /* กล่องที่ hover จะขยายใหญ่ */
+      }
+      .box {
+        transition: all 0.3s ease;
+      }
+    </style>
   </head>
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    {% comment %} <!-- Profile/Login Button -->
+
+  <body class="bg-gray-100 p-6">
+    <!-- Profile/Login Button -->
     {% if user.is_authenticated %}
+      <h1 class="text-3xl font-bold text-blue-600 mb-6">Hello, {{ user.username }} 👋</h1>
+
       <button onclick="toggleModal()" class="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Profile</button>
     {% else %}
+      <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, Guest 👋</h1>
+      <p class="text-gray-700 mb-6">You are not logged in.</p>
+
       <a href="{% url 'login' %}" class="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Login</a>
     {% endif %}
+
+    <div class="flex h-screen">
+      <!-- left 60% -->
+      <div class="w-3/5 flex flex-col p-8 justify-center items-center bg-gray-100">
+        <!-- ปุ่ม 1 -->
+        <div class="w-[600px] h-14 border-2 border-red-500 text-red-500 rounded cursor-pointer relative transition-all duration-300 transform" data-btn="3">
+          <h2 class="text-2xl font-bold absolute left-[80px] top-1/4 -translate-x-1/2 -translate-y-1/2">Floor 4</h2>
+          <h3 class="text-2xl font-semibold absolute left-1/4 top-1/2 -translate-x-1/2 -translate-y-1/2">Room available : XX</h3>
+
+          <button class="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 border px-4 py-1 rounded hover:bg-blue-600">View Room</button>
+        </div>
+
+        <!-- ปุ่ม 2 -->
+        <div class="w-[600px] h-14 border-2 border-green-500 text-green-500 text-center flex items-center justify-center rounded transition-all duration-300 transform cursor-pointer" data-btn="2">ปุ่ม 2</div>
+
+        <!-- ปุ่ม 3 -->
+        <div class="w-[600px] h-14 border-2 border-red-500 text-red-500 text-center flex items-center justify-center rounded transition-all duration-300 transform cursor-pointer" data-btn="3">ปุ่ม 3</div>
+      </div>
+
+      <script>
+        const buttons = document.querySelectorAll('[data-btn]')
+        
+        //fixed size when page load
+        window.addEventListener('DOMContentLoaded', () => {
+          resetButtons()
+        })
+        
+        function resetChildTransform(button) {
+          const inner = button.querySelectorAll('h1, span, button')
+          inner.forEach((c) => (c.style.transform = 'none'))
+        }
+        
+        // ใช้ใน resetButtons()
+        function resetButtons() {
+          buttons.forEach((b) => {
+            b.style.flex = '1'
+            b.style.width = '600px'
+            resetChildTransform(b)
+          })
+        }
+        
+        // ใช้ตอน hover สำหรับปุ่มอื่น ๆ
+        buttons.forEach((btn) => {
+          btn.addEventListener('mouseenter', () => {
+            buttons.forEach((b) => {
+              if (b === btn) {
+                b.style.flex = '1.5'
+                b.style.width = '690px'
+              } else {
+                b.style.flex = '1'
+                b.style.width = '540px'
+              }
+              resetChildTransform(b)
+            })
+          })
+        
+          btn.addEventListener('mouseleave', () => {
+            resetButtons()
+          })
+        })
+      </script>
+
+      <!-- right 40% -->
+      <div class="w-2/5 p-8 bg-white-200 flex-1 rounded shadow flex flex-col justify-center items-center">
+        <h2 class="text-[50px] font-bold mb-2">Booking Website</h2>
+        <p id="clock" class="text-[36px]"></p>
+      </div>
+    </div>
 
     <!-- Profile Modal -->
     {% if user.is_authenticated %}
@@ -45,65 +130,24 @@
       </div>
     {% endif %}
 
-    <!-- Main Page Content -->
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl text-center">
-      {% if user.is_authenticated %}
-        <h1 class="text-3xl font-bold text-blue-600 mb-6">Hello, {{ user.username }} 👋</h1>
-        <p class="text-gray-700 mb-6">Choose a floor below:</p>
-
-        <!-- 4 Buttons aligned in a row -->
-        <div class="grid grid-cols-1 gap-4">
-          <a href="{% url 'room_select' %}" class="bg-blue-500 text-white py-4 rounded-lg shadow hover:bg-blue-600 transition">Floor 4</a>
-          <a href="{% url 'room_select' %}" class="bg-blue-500 text-white py-4 rounded-lg shadow hover:bg-blue-600 transition">Floor 3</a>
-          <a href="{% url 'room_select' %}" class="bg-blue-500 text-white py-4 rounded-lg shadow hover:bg-blue-600 transition">Floor 2</a>
-          <a href="{% url 'room_select' %}" class="bg-blue-500 text-white py-4 rounded-lg shadow hover:bg-blue-600 transition">Floor 1</a>
-        </div>
-      {% else %}
-        <h1 class="text-3xl font-bold text-gray-800 mb-4">Welcome, Guest 👋</h1>
-        <p class="text-gray-700 mb-6">You are not logged in.</p>
-        <div class="space-x-4">
-          <a href="{% url 'login' %}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Login</a>
-          <a href="{% url 'register' %}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Register</a>
-        </div>
-      {% endif %}
-    </div>
-
     <script>
       function toggleModal() {
         document.getElementById('profileModal').classList.toggle('hidden')
       }
-    </script> {% endcomment %}
-
-    <div class="flex h-screen">
-      <!-- Sidebar Building Floors -->
-      <div class="w-40 bg-gray-100 flex flex-col items-stretch p-2 space-y-2">
-        <!-- ชั้น -->
-        <button class="h-24 bg-blue-500 text-white text-xl font-semibold rounded-lg shadow-md transition transform hover:scale-105 hover:translate-x-1">ชั้น 1</button>
-        <button class="h-24 bg-blue-500 text-white text-xl font-semibold rounded-lg shadow-md transition transform hover:scale-105 hover:translate-x-1">ชั้น 2</button>
-        <button class="h-24 bg-blue-500 text-white text-xl font-semibold rounded-lg shadow-md transition transform hover:scale-105 hover:translate-x-1">ชั้น 3</button>
-        <button class="h-24 bg-blue-500 text-white text-xl font-semibold rounded-lg shadow-md transition transform hover:scale-105 hover:translate-x-1">ชั้น 4</button>
-      </div>
-
-      <!-- Main Content -->
-      <div class="flex-1 flex flex-col items-center justify-start pt-16">
-        <!-- Title -->
-        <h1 class="text-5xl font-bold mb-8">Title</h1>
-
-        <!-- Clock -->
-        <div id="clock" class="text-4xl font-mono"></div>
-      </div>
-    </div>
+    </script>
 
     <script>
       function updateClock() {
         const now = new Date()
-        const h = String(now.getHours()).padStart(2, '0')
-        const m = String(now.getMinutes()).padStart(2, '0')
-        const s = String(now.getSeconds()).padStart(2, '0')
-        document.getElementById('clock').textContent = `${h}:${m}:${s}`
+        const hours = String(now.getHours()).padStart(2, '0')
+        const minutes = String(now.getMinutes()).padStart(2, '0')
+        const seconds = String(now.getSeconds()).padStart(2, '0')
+        document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`
       }
-      setInterval(updateClock, 1000)
+      
+      // อัปเดตทันทีและทุกวินาที
       updateClock()
+      setInterval(updateClock, 1000)
     </script>
   </body>
 </html>
