@@ -8,29 +8,62 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center font-sans">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">Floor num</h1>
+        <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">Select Floor and Room</h1>
 
         <form method="POST" class="space-y-4">
             {% csrf_token %}
+
+            <!-- Floor Dropdown -->
             <div class="flex flex-col">
-                <label for="room" class="mb-1 font-medium">Room:</label>
-                <select name="selected_room" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
-                    <option value="">-- Select room --</option>
-                    {% for floor, floor_rooms in rooms_by_floor.items %}
-                        <optgroup label="Floor {{ floor }}">
-                            {% for room in floor_rooms %}
-                                <option value="{{ room.room_id }}">{{ room.room_name|default:room.room_id }}</option>
-                            {% endfor %}
-                        </optgroup>
+                <label for="floor" class="mb-1 font-medium">Floor:</label>
+                <select id="floor_select" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+                    <option value="">-- Select floor --</option>
+                    {% for floor in rooms_by_floor.keys %}
+                        <option value="{{ floor }}">Floor {{ floor }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <button type="submit" name="action" value="room_select"
-                    class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+            <!-- Room Dropdown -->
+            <div class="flex flex-col mt-4">
+                <label for="room" class="mb-1 font-medium">Room:</label>
+                <select name="selected_room" id="room_select" class="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" required disabled>
+                    <option value="">-- Select room --</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
                 Submit
             </button>
         </form>
     </div>
+
+    <!-- JSON Data for JS -->
+    {{ rooms_by_floor|json_script:"rooms-data" }}
+
+    <script>
+        const floorSelect = document.getElementById('floor_select');
+        const roomSelect = document.getElementById('room_select');
+
+        // Parse rooms data safely
+        const roomsData = JSON.parse(document.getElementById('rooms-data').textContent);
+
+        floorSelect.addEventListener('change', function() {
+            const floor = this.value;
+            roomSelect.innerHTML = '<option value="">-- Select room --</option>'; // reset
+
+            if(floor && roomsData[floor]) {
+                roomSelect.disabled = false; // enable dropdown
+                roomsData[floor].forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.room_id;
+                    option.text = room.room_name || room.room_id;
+                    roomSelect.appendChild(option);
+                });
+            } else {
+                roomSelect.disabled = true; // disable if no floor selected
+            }
+        });
+    </script>
 </body>
 </html>
