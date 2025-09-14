@@ -82,6 +82,7 @@ def booking_page(request, room_number):
         "slots_info": slots_info,
         "room_name": room.room_name,
         "room_status": room.status,
+        "floor": room.floor,
     }
 
     return render(request, "booking/booking_page.html", context)
