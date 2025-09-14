@@ -81,16 +81,21 @@ def admin_dashboard(request):
 
     if request.method == "POST":
         if "add_room" in request.POST:
+            room_id = request.POST.get("room_id")
             room_name = request.POST.get("room_name")
             cap = request.POST.get("cap")
-            floor = request.POST.get("floor")
+            floor = room_id[0]
+
+            if not room_name:
+                room_name = room_id
 
             Room.objects.create(
+                room_id=room_id,
                 room_name=room_name,
                 cap=int(cap) if cap else None,
                 floor=floor
             )
-            messages.success(request, f"Room {room_name} added successfully.")
+            messages.success(request, f"Room {room_id} added successfully.")
 
         elif "delete_room" in request.POST:
             room_id = request.POST.get("room_id")

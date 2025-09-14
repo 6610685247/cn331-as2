@@ -8,6 +8,7 @@ class Room(models.Model):
     floor = models.IntegerField()
     status = models.BooleanField(default=False)
 
+
     def get_status(self):
         return "On" if self.status else "Off"
     def __str__(self):

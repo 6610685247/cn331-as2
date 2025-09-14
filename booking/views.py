@@ -43,7 +43,7 @@ def booking_view(request, room_number):
             end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end, "%H:%M").time()))
             room = Room.objects.get(room_id=room_number)
 
-            if Booking.objects.filter(user=request.user, start_time__date=book_date).exists():
+            if Booking.objects.filter(user=request.user,room_id = room_number, start_time__date=book_date).exists():
                 messages.error(request, f"You already booked on {book_date}.")
 
             elif Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
@@ -58,11 +58,6 @@ def booking_view(request, room_number):
                 )
                 messages.success(request, f"Booking confirmed for {book_date} {start}-{end}.")
 
-    user_booked_on_date = Booking.objects.filter(
-        user=request.user,
-        start_time__date=book_date
-    ).exists()
-
     booked_slots = Booking.objects.filter(
         room_id=room_number,
         start_time__date=book_date
@@ -70,23 +65,36 @@ def booking_view(request, room_number):
 
     booked_slots = [(b[0].strftime("%H:%M"), b[1].strftime("%H:%M")) for b in booked_slots]
 
+    # list slot ของ user ที่จองแล้ว
+    user_booked_slots = Booking.objects.filter(
+        user=request.user,
+        start_time__date=book_date,
+        room_id=room_number
+        ).values_list('start_time', 'end_time')
+
+    user_booked_slots = [(b[0].strftime("%H:%M"), b[1].strftime("%H:%M")) for b in user_booked_slots]
+
     slots_info = []
     for start, end in time_slot:
         start_short, end_short = start[:5], end[:5]
-        is_booked = (start_short, end_short) in booked_slots or user_booked_on_date
+        # เช็คว่า slot นี้ถูกจองหรือไม่
+        is_booked = (start_short, end_short) in booked_slots or (start_short, end_short) in user_booked_slots
         slots_info.append({
             "start": start_short,
             "end": end_short,
+            "room_id": room_number,
             "is_booked": is_booked
         })
 
+
     context = {
-        "room_num": room_number,
+        "room_id": room_number,
         "book_date": book_date.strftime("%Y-%m-%d"),
         "today": today.strftime("%Y-%m-%d"),
         "tmr": tmr.strftime("%Y-%m-%d"),
         "slots_info": slots_info,
         "room_name": Room.objects.get(room_id=room_number).room_name,
+        "room_status": Room.objects.get(room_id=room_number).status,
     }
 
     return render(request, "booking/booking_page.html", context)

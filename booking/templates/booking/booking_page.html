@@ -23,7 +23,7 @@
         </div>
         {% endif %}
 
-        <h2 class="text-xl font-semibold mb-4">Room {{ room_name }}</h2>
+        <h2 class="text-xl font-semibold mb-4">Room : {{ room_name }} {% if not room_status %} (Not Available){% endif %}</h2>
 
         <div class="flex justify-center gap-4 mb-4">
             <form method="POST">
@@ -52,14 +52,18 @@
             {% for slot in slots_info %}
             <div class="flex items-center justify-between bg-white p-4 rounded shadow">
                 <span class="font-medium">{{ slot.start }} - {{ slot.end }}</span>
-                {% if slot.is_booked %}
+                {% if slot.is_booked and slot.room_id == room_id %}
                 <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
+                    Book
+                </button>
+                {% elif not room_status %}
+                    <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
                     Book
                 </button>
                 {% else %}
                 <form method="POST" class="m-0">
                     {% csrf_token %}
-                    <input type="hidden" name="room_id" value="{{ room_num }}">
+                    <input type="hidden" name="room_id" value="{{ room_id }}">
                     <input type="hidden" name="date" value="{{ book_date }}">
                     <input type="hidden" name="start_time" value="{{ slot.start }}:00">
                     <input type="hidden" name="end_time" value="{{ slot.end }}:00">
