@@ -46,6 +46,8 @@ def booking_page(request, room_number):
 
             if Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
                 messages.error(request, "This slot is already booked.")
+            elif Booking.objects.filter(user=request.user, start_time__date=book_date).exists():
+                messages.error(request, f"You already booked on {book_date}.")
             else:
                 Booking.objects.create(
                     room=room,
@@ -75,6 +77,7 @@ def booking_page(request, room_number):
         "slots_info": slots_info,
         "room_name": room.room_name,
         "room_status": room.status,
+        "floor": room.floor,
     }
 
     return render(request, "booking/booking_page.html", context)
