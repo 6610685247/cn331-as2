@@ -5,7 +5,7 @@ class Room(models.Model):
     room_id = models.AutoField(primary_key=True)
     room_name = models.CharField(max_length=50, null=False)
     cap = models.IntegerField(null=True, blank=True)
-    floor = models.CharField(max_length=10, default="1")
+    floor = models.IntegerField()
     status = models.BooleanField(default=False)
 
     def get_status(self):

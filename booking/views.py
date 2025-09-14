@@ -23,7 +23,6 @@ def booking_view(request, room_number):
     if not Room.objects.filter(room_id=room_number).exists():
         return redirect("room_view")
 
-    # Default: today
     book_date = today
 
     if request.method == "POST":
@@ -33,7 +32,7 @@ def booking_view(request, room_number):
         elif action == "book_tmr":
             book_date = tmr
         elif action == "book":
-            # For booking action, the date comes from form
+
             book_date_str = request.POST.get("date")
             book_date = datetime.fromisoformat(book_date_str).date()
 
@@ -44,10 +43,9 @@ def booking_view(request, room_number):
             end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end, "%H:%M").time()))
             room = Room.objects.get(room_id=room_number)
 
-            # Check if user already booked on this date
             if Booking.objects.filter(user=request.user, start_time__date=book_date).exists():
                 messages.error(request, f"You already booked on {book_date}.")
-            # Check if slot already booked
+
             elif Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
                 messages.error(request, "This slot is already booked.")
             else:
@@ -60,7 +58,6 @@ def booking_view(request, room_number):
                 )
                 messages.success(request, f"Booking confirmed for {book_date} {start}-{end}.")
 
-    # Queries must use updated book_date
     user_booked_on_date = Booking.objects.filter(
         user=request.user,
         start_time__date=book_date
@@ -73,7 +70,6 @@ def booking_view(request, room_number):
 
     booked_slots = [(b[0].strftime("%H:%M"), b[1].strftime("%H:%M")) for b in booked_slots]
 
-    # Build slots info
     slots_info = []
     for start, end in time_slot:
         start_short, end_short = start[:5], end[:5]
@@ -90,13 +86,10 @@ def booking_view(request, room_number):
         "today": today.strftime("%Y-%m-%d"),
         "tmr": tmr.strftime("%Y-%m-%d"),
         "slots_info": slots_info,
+        "room_name": Room.objects.get(room_id=room_number).room_name,
     }
 
     return render(request, "booking/booking_page.html", context)
-
-
-
-
 
 @login_required(login_url='login')
 def my_booking(request):

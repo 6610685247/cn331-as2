@@ -10,7 +10,6 @@
     <div class="max-w-3xl mx-auto p-6">
         <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Booking Web</h1>
 
-        <!-- Toast Messages -->
         {% if messages %}
         <div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50">
             {% for message in messages %}
@@ -24,9 +23,8 @@
         </div>
         {% endif %}
 
-        <h2 class="text-xl font-semibold mb-4">Room {{ room_num }}</h2>
+        <h2 class="text-xl font-semibold mb-4">Room {{ room_name }}</h2>
 
-        <!-- Book Today & Tomorrow -->
         <div class="flex justify-center gap-4 mb-4">
             <form method="POST">
                 {% csrf_token %}
