@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Floor {{ floor }} Rooms</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 p-6">
+
+  <a href="{% url 'home' %}" class="fixed top-4 right-4 bg-pink-200 px-4 py-2 rounded hover:bg-pink-300 z-50">← Back</a>
+
+  <h1 class="text-3xl font-bold mb-6">Rooms on Floor {{ floor }}</h1>
+
+  {% if rooms %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    {% for room in rooms %}
+      {% if room.status %}
+        <a href="{% url 'booking_page' room.room_id %}" 
+           class="block border p-4 rounded shadow bg-green-50 hover:bg-green-100 hover:scale-105 hover:shadow-lg transition-all duration-300 transform">
+          <h2 class="text-xl font-bold">{{ room.room_name }}</h2>
+          <p>Capacity: {{ room.cap }}</p>
+          <p>Status: <span class="font-semibold text-green-700">Available</span></p>
+        </a>
+      {% else %}
+        <div class="block border p-4 rounded shadow bg-red-50 cursor-not-allowed">
+          <h2 class="text-xl font-bold">{{ room.room_name }}</h2>
+          <p>Capacity: {{ room.cap }}</p>
+          <p>Status: <span class="font-semibold text-red-700">Occupied</span></p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% else %}
+    <p>No rooms available on this floor.</p>
+  {% endif %}
+
+</body>
+
+</html>

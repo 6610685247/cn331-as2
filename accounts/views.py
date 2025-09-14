@@ -10,11 +10,21 @@ from django.contrib.auth.models import User
 from django.utils.dateparse import parse_date
 from django.contrib import messages
 
+
 def is_admin(user):
     return user.is_staff or user.is_superuser
 
 def home(request):
-    return render(request, 'home.html')
+    floors_data = []
+    floor_numbers = Room.objects.values_list('floor', flat=True).distinct()
+    for f in floor_numbers:
+        available_count = Room.objects.filter(floor=f, status=True).count()
+        floors_data.append({'floor': f, 'available_rooms': available_count})
+    
+    context = {
+        'floors': floors_data
+    }
+    return render(request, 'home.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -56,7 +66,6 @@ def admin_dashboard(request):
     bookings = Booking.objects.all().select_related("room", "user")
     users = User.objects.all()
 
-    # --- Get filters from GET ---
     user_id = request.GET.get("user")
     room_id = request.GET.get("room")
     date_str = request.GET.get("date")
@@ -119,7 +128,6 @@ def admin_dashboard(request):
         "start_hours": start_hours,
         "end_hours": end_hours,
     }
-    # Always redirect after POST to avoid resubmission
     return render(request, "dashboard.html", context)
 
 

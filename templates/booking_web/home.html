@@ -7,10 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       .box-container:hover .box {
-        flex: 1; /* ปรับขนาดกล่องทุกกล่องเล็กลงเมื่อ hover */
+        flex: 1; 
       }
       .box-container .box:hover {
-        flex: 3; /* กล่องที่ hover จะขยายใหญ่ */
+        flex: 3; 
       }
       .box {
         transition: all 0.3s ease;
@@ -19,7 +19,6 @@
   </head>
 
   <body class="bg-gray-100 p-6">
-    <!-- Profile/Login Button -->
     {% if user.is_authenticated %}
       <h1 class="text-3xl font-bold text-blue-600 mb-6">Hello, {{ user.username }} 👋</h1>
 
@@ -32,27 +31,25 @@
     {% endif %}
 
     <div class="flex h-screen">
-      <!-- left 60% -->
-      <div class="w-3/5 flex flex-col p-8 justify-center items-center bg-gray-100">
-        <!-- ปุ่ม 1 -->
-        <div class="w-[600px] h-14 border-2 border-red-500 text-red-500 rounded cursor-pointer relative transition-all duration-300 transform" data-btn="3">
-          <h2 class="text-2xl font-bold absolute left-[80px] top-1/4 -translate-x-1/2 -translate-y-1/2">Floor 4</h2>
-          <h3 class="text-2xl font-semibold absolute left-1/4 top-1/2 -translate-x-1/2 -translate-y-1/2">Room available : XX</h3>
-
-          <button class="absolute right-4 top-1/2 -translate-y-1/2 text-red-500 border px-4 py-1 rounded hover:bg-blue-600">View Room</button>
+    <div class="w-3/5 flex flex-col p-8 justify-center items-center gap-4">
+      {% for floor in floors %}
+        <div class="w-[600px] h-14 border-2 rounded cursor-pointer relative transition-all duration-300 transform flex items-center justify-between px-4 box" data-btn="{{ floor.floor }}">
+          <div>
+            <h2 class="text-2xl font-bold">Floor {{ floor.floor }}</h2>
+            <h3 class="text-lg font-semibold">Room available: {{ floor.available_rooms }}</h3>
+          </div>
+          <button>
+          <a href="{% url 'floor_rooms' floor.floor %}" class="border px-4 py-1 rounded hover:bg-blue-600 transition">
+            View Available Rooms
+          </a>
+          </button>
         </div>
-
-        <!-- ปุ่ม 2 -->
-        <div class="w-[600px] h-14 border-2 border-green-500 text-green-500 text-center flex items-center justify-center rounded transition-all duration-300 transform cursor-pointer" data-btn="2">ปุ่ม 2</div>
-
-        <!-- ปุ่ม 3 -->
-        <div class="w-[600px] h-14 border-2 border-red-500 text-red-500 text-center flex items-center justify-center rounded transition-all duration-300 transform cursor-pointer" data-btn="3">ปุ่ม 3</div>
-      </div>
+      {% endfor %}
+    </div>
 
       <script>
         const buttons = document.querySelectorAll('[data-btn]')
         
-        //fixed size when page load
         window.addEventListener('DOMContentLoaded', () => {
           resetButtons()
         })
@@ -62,7 +59,6 @@
           inner.forEach((c) => (c.style.transform = 'none'))
         }
         
-        // ใช้ใน resetButtons()
         function resetButtons() {
           buttons.forEach((b) => {
             b.style.flex = '1'
@@ -71,7 +67,6 @@
           })
         }
         
-        // ใช้ตอน hover สำหรับปุ่มอื่น ๆ
         buttons.forEach((btn) => {
           btn.addEventListener('mouseenter', () => {
             buttons.forEach((b) => {
@@ -92,18 +87,15 @@
         })
       </script>
 
-      <!-- right 40% -->
       <div class="w-2/5 p-8 bg-white-200 flex-1 rounded shadow flex flex-col justify-center items-center">
         <h2 class="text-[50px] font-bold mb-2">Booking Website</h2>
         <p id="clock" class="text-[36px]"></p>
       </div>
     </div>
 
-    <!-- Profile Modal -->
     {% if user.is_authenticated %}
       <div id="profileModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center relative">
-          <!-- Close Button -->
           <button onclick="toggleModal()" class="absolute top-2 right-2 text-gray-500 hover:text-black">&times;</button>
 
           <h1 class="text-3xl font-bold text-blue-600 mb-4">Profile</h1>
@@ -145,7 +137,6 @@
         document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`
       }
       
-      // อัปเดตทันทีและทุกวินาที
       updateClock()
       setInterval(updateClock, 1000)
     </script>
