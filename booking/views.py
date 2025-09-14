@@ -6,13 +6,15 @@ from room.models import Room
 from booking.models import Booking
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.timezone import localdate
+
 
 @login_required
 def booking_view(request, room_number):
-    today = timezone.localdate()
+    today = localdate()
     tmr = today + timedelta(days=1)
 
-    time_slot = [
+    time_slots = [
         ('09:00:00', '10:00:00'),
         ('10:00:00', '11:00:00'),
         ('11:00:00', '12:00:00'),
@@ -20,7 +22,9 @@ def booking_view(request, room_number):
         ('13:00:00', '14:00:00'),
     ]
 
-    if not Room.objects.filter(room_id=room_number).exists():
+    try:
+        room = Room.objects.get(room_id=room_number)
+    except Room.DoesNotExist:
         return redirect("room_view")
 
     book_date = today
@@ -32,61 +36,45 @@ def booking_view(request, room_number):
         elif action == "book_tmr":
             book_date = tmr
         elif action == "book":
-
             book_date_str = request.POST.get("date")
             book_date = datetime.fromisoformat(book_date_str).date()
+            start_time_str = request.POST.get("start_time")[:5]
+            end_time_str = request.POST.get("end_time")[:5]
 
-            start = request.POST.get("start_time")[:5]  
-            end = request.POST.get("end_time")[:5]      
+            start_dt = make_aware(datetime.combine(book_date, datetime.strptime(start_time_str, "%H:%M").time()))
+            end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end_time_str, "%H:%M").time()))
 
-            start_dt = make_aware(datetime.combine(book_date, datetime.strptime(start, "%H:%M").time()))
-            end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end, "%H:%M").time()))
-            room = Room.objects.get(room_id=room_number)
-
-            if Booking.objects.filter(user=request.user, start_time__date=book_date).exists():
-                messages.error(request, f"You already booked on {book_date}.")
-
-            elif Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
+            if Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists():
                 messages.error(request, "This slot is already booked.")
             else:
                 Booking.objects.create(
                     room=room,
                     user=request.user,
                     start_time=start_dt,
-                    end_time=end_dt,
-                    room_id=room_number,
+                    end_time=end_dt
                 )
-                messages.success(request, f"Booking confirmed for {book_date} {start}-{end}.")
-
-    user_booked_on_date = Booking.objects.filter(
-        user=request.user,
-        start_time__date=book_date
-    ).exists()
-
-    booked_slots = Booking.objects.filter(
-        room_id=room_number,
-        start_time__date=book_date
-    ).values_list('start_time', 'end_time')
-
-    booked_slots = [(b[0].strftime("%H:%M"), b[1].strftime("%H:%M")) for b in booked_slots]
+                messages.success(request, f"Booking confirmed for {book_date} {start_time_str}-{end_time_str}.")
 
     slots_info = []
-    for start, end in time_slot:
-        start_short, end_short = start[:5], end[:5]
-        is_booked = (start_short, end_short) in booked_slots or user_booked_on_date
+    for start_str, end_str in time_slots:
+        start_dt = make_aware(datetime.combine(book_date, datetime.strptime(start_str[:5], "%H:%M").time()))
+        end_dt = make_aware(datetime.combine(book_date, datetime.strptime(end_str[:5], "%H:%M").time()))
+        is_booked = Booking.objects.filter(room=room, start_time__lt=end_dt, end_time__gt=start_dt).exists()
         slots_info.append({
-            "start": start_short,
-            "end": end_short,
+            "start": start_str[:5],
+            "end": end_str[:5],
+            "room_id": room_number,
             "is_booked": is_booked
         })
 
     context = {
-        "room_num": room_number,
+        "room_id": room_number,
         "book_date": book_date.strftime("%Y-%m-%d"),
         "today": today.strftime("%Y-%m-%d"),
         "tmr": tmr.strftime("%Y-%m-%d"),
         "slots_info": slots_info,
-        "room_name": Room.objects.get(room_id=room_number).room_name,
+        "room_name": room.room_name,
+        "room_status": room.status,
     }
 
     return render(request, "booking/booking_page.html", context)
@@ -98,10 +86,16 @@ def my_booking(request):
     return render(request, "booking/my_booking.html", {"bookings": bookings, "now": now})
 
 @login_required(login_url='login')
-def booking_page(request):
+def booking_page(request, room_id):
+    room = get_object_or_404(Room, room_id=room_id)
     bookings = Booking.objects.filter(user=request.user)
     now = timezone.now()
-    return render(request, "booking/booking_page.html", {"bookings": bookings, "now": now})
+    context = {
+        "room": room,
+        "bookings": bookings,
+        "now": now
+    }
+    return render(request, "booking/booking_page.html", context)
 
 @login_required
 def cancel_booking(request, booking_id):

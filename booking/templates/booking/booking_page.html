@@ -6,12 +6,20 @@
     <title>Booking Page</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans">
-    <div class="max-w-3xl mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Booking Web</h1>
+<body class="bg-blue-50 min-h-screen font-sans">
+
+    <div class="fixed top-4 right-4 z-50">
+        <a href="javascript:history.back()" 
+           class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
+           Return
+        </a>
+    </div>
+
+    <div class="max-w-3xl mx-auto p-6 mt-12">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">Booking Web</h1>
 
         {% if messages %}
-        <div id="toast-container" class="fixed top-4 right-4 space-y-2 z-50">
+        <div id="toast-container" class="fixed top-20 right-4 space-y-2 z-50">
             {% for message in messages %}
             <div class="toast text-white px-4 py-2 rounded shadow-lg opacity-100 transition-opacity duration-500
                 {% if message.tags == 'success' %} bg-green-500 
@@ -23,27 +31,29 @@
         </div>
         {% endif %}
 
-        <h2 class="text-xl font-semibold mb-4">Room {{ room_name }}</h2>
+        <h2 class="text-xl font-semibold mb-4">Room: {{ room_name }} {% if not room_status %} (Not Available){% endif %}</h2>
 
         <div class="flex justify-center gap-4 mb-4">
             <form method="POST">
                 {% csrf_token %}
                 <button type="submit" name="action" value="book_today"
-                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500 transition
+                        {% if not room_status %} bg-gray-300 cursor-not-allowed hover:bg-gray-300 {% endif %}"
+                        {% if not room_status %} disabled {% endif %}>
                     Today
                 </button>
             </form>
             <form method="POST">
                 {% csrf_token %}
                 <button type="submit" name="action" value="book_tmr"
-                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+                        class="bg-blue-400 text-white px-4 py-2 rounded hover:bg-blue-500 transition
+                        {% if not room_status %} bg-gray-300 cursor-not-allowed hover:bg-gray-300 {% endif %}"
+                        {% if not room_status %} disabled {% endif %}>
                     Tomorrow
                 </button>
             </form>
         </div>
 
-
-        <!-- Booking Table -->
         {% if book_date %}
         <h3 class="text-lg font-medium mb-2">Date: {{ book_date }}</h3>
         <h3 class="text-lg font-semibold mb-4">Booking Table</h3>
@@ -52,19 +62,20 @@
             {% for slot in slots_info %}
             <div class="flex items-center justify-between bg-white p-4 rounded shadow">
                 <span class="font-medium">{{ slot.start }} - {{ slot.end }}</span>
+
                 {% if slot.is_booked %}
-                <button class="bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed" disabled>
-                    Book
+                <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded cursor-not-allowed" disabled>
+                    Booked
                 </button>
                 {% else %}
                 <form method="POST" class="m-0">
                     {% csrf_token %}
-                    <input type="hidden" name="room_id" value="{{ room_num }}">
+                    <input type="hidden" name="room_id" value="{{ slot.room_id }}">
                     <input type="hidden" name="date" value="{{ book_date }}">
                     <input type="hidden" name="start_time" value="{{ slot.start }}:00">
                     <input type="hidden" name="end_time" value="{{ slot.end }}:00">
                     <button type="submit" name="action" value="book"
-                            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">
+                            class="bg-green-400 text-white px-4 py-2 rounded hover:bg-green-500 transition">
                         Book
                     </button>
                 </form>
@@ -73,21 +84,12 @@
             {% endfor %}
         </div>
         {% endif %}
-
-        <!-- Return Button -->
-        <div class="mt-6 text-center">
-            <a href="{% url 'my_booking' %}"
-               class="inline-block bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
-               Return
-            </a>
-        </div>
     </div>
 
-    <!-- Toast Script -->
     <script>
         setTimeout(() => {
             document.querySelectorAll(".toast").forEach(toast => {
-                toast.classList.add("opacity-0");
+                toast.classList.add("opacity-0", "pointer-events-none");
                 setTimeout(() => toast.remove(), 500);
             });
         }, 3000);

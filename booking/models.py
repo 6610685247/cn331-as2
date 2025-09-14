@@ -3,7 +3,6 @@ from room.models import Room
 from accounts.models import Profile
 from django.contrib.auth.models import User
 
-# Create your models here.
 
 class Booking(models.Model) :
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
