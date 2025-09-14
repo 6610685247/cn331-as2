@@ -10,7 +10,7 @@ from django.utils.timezone import localdate
 
 
 @login_required
-def booking_view(request, room_number):
+def booking_page(request, room_number):
     today = localdate()
     tmr = today + timedelta(days=1)
 
@@ -84,18 +84,6 @@ def my_booking(request):
     bookings = Booking.objects.filter(user=request.user)
     now = timezone.now()
     return render(request, "booking/my_booking.html", {"bookings": bookings, "now": now})
-
-@login_required(login_url='login')
-def booking_page(request, room_id):
-    room = get_object_or_404(Room, room_id=room_id)
-    bookings = Booking.objects.filter(user=request.user)
-    now = timezone.now()
-    context = {
-        "room": room,
-        "bookings": bookings,
-        "now": now
-    }
-    return render(request, "booking/booking_page.html", context)
 
 @login_required
 def cancel_booking(request, booking_id):
