@@ -80,7 +80,9 @@ WSGI_APPLICATION = 'booking_web.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 if not os.environ.get('DEBUG', 'False') == 'True':
     DATABASES = {
-        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+        'default': dj_database_url.parse(
+            "postgresql://dbbooking_web_user:0qXtwItJ1DU6778IKYOig45gRH3h7KFk@dpg-d360ffur433s73ag68ag-a.oregon-postgres.render.com/dbbooking_web"
+        )
     }
 else:
     DATABASES = {
