@@ -138,15 +138,15 @@ LOGIN_URL = 'login'
 
 TAILWIND_APP_NAME = 'theme'
 
-# if not  os.environ.get('DEBUG', 'False') == 'True' :
-#     DATABASES = {
-#         'default': dj_database_url.parse(os.environ.get('db.sqlite3'))
-#     }
-# else:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE' : 'django.db.backends.sqlite3',
-#             'NAME': 'db.sqlite3',
-#         }
-#     }
+if not  os.environ.get('DEBUG', 'False') == 'True' :
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE' : 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite3',
+        }
+    }
 
