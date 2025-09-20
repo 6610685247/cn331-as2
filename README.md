@@ -20,3 +20,6 @@
 
 ## Presentation Link
 https://drive.google.com/file/d/1yoX5U0y3X0xe42aqi4aA_yEYMxkFT24u/view?usp=sharing
+### Deploy Presentation Link + Web Link
+https://drive.google.com/file/d/1ZPZusE32T5AFtok1e9YR9TLbFmxGicbk/view?usp=sharing
+https://cn331-as2-8w1h.onrender.com
