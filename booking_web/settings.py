@@ -6,21 +6,12 @@ import os
 from pathlib import Path
 import dj_database_url
 
-# ----------------------
-# Paths
-# ----------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ----------------------
-# Security
-# ----------------------
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-this-secret-key")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
 
-# ----------------------
-# Applications
-# ----------------------
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -64,13 +55,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "booking_web.wsgi.application"
 
-# ----------------------
-# Database
-# ----------------------
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # Production database (Postgres, MySQL, etc.)
     DATABASES = {
         "default": dj_database_url.config(
             default=DATABASE_URL,
@@ -79,7 +66,6 @@ if DATABASE_URL:
         )
     }
 else:
-    # Local fallback (SQLite)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -87,9 +73,6 @@ else:
         }
     }
 
-# ----------------------
-# Password validation
-# ----------------------
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -97,32 +80,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ----------------------
-# Internationalization
-# ----------------------
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ----------------------
-# Static files
-# ----------------------
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-# ----------------------
-# Default primary key field type
-# ----------------------
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ----------------------
-# Login
-# ----------------------
 LOGIN_URL = "login"
 
-# ----------------------
-# Tailwind
-# ----------------------
 TAILWIND_APP_NAME = "theme"
