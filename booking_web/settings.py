@@ -94,3 +94,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 
 TAILWIND_APP_NAME = "theme"
+os.makedirs(STATIC_ROOT, exist_ok=True)
