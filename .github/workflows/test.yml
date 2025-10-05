@@ -18,4 +18,4 @@ jobs:
       - run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          pytest -v                     # รัน unit tests
+          python ./manage.py test
