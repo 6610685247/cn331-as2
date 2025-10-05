@@ -73,7 +73,6 @@ class AdminDashboardTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.room_id = 999
-        # สร้าง admin user
         self.admin_user = User.objects.create_superuser(username="admin", password="pass", email="admin@example.com")
         self.client.login(username="admin", password="pass")
 
