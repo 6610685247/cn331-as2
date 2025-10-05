@@ -5,7 +5,7 @@ from .models import Profile,Booking,Room
 from datetime import datetime, date, timedelta
 from django.urls import reverse
 
-# Create your tests here.
+
 
 class BookingTestCase(TestCase):
     def setUp(self):
@@ -39,54 +39,54 @@ class BookingTestCase(TestCase):
             end_time=datetime.combine(self.date, self.end_time_value)
         )
 
-        # check new exist data
+        
         self.assertEqual(Booking.objects.count(), 1)
 
-        # check new data in database
+       
         self.assertEqual(booking.room, self.room)
         self.assertEqual(booking.user, self.user)
         self.assertEqual(booking.start_time.time(), self.start_time_value)
         self.assertEqual(booking.end_time.time(), self.end_time_value)
     
     def test_user_book_same_slot_same_day(self):
-        # login user
+        
         self.client.login(username=self.username, password=self.password)
 
-        # first book
+        
         response1 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(Booking.objects.count(), 1)
 
-        # second book
+        
         response2 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
-        self.assertEqual(Booking.objects.count(), 1)  # no new booking
+        self.assertEqual(Booking.objects.count(), 1)  
         self.assertContains(response2, "already booked", status_code=200)
 
     def test_two_users_booking_same_slot(self):
-        # login user1 + book
+        
         self.client.login(username=self.username, password=self.password)
         self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
         self.assertEqual(Booking.objects.count(), 1)
         self.client.logout()
 
-        # create new user2
+        
         self.username2 = "test_user_2"
         self.password2 = "test2"
         self.user2 = User.objects.create_user(username=self.username2, password=self.password2)
         Profile.objects.create(user=self.user2, studentid="234567890")
 
-        # User2 login + book same slot
+        
         self.client.login(username=self.username2, password=self.password2)
         response2 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
 
-        # check no new booking
+        
         self.assertEqual(Booking.objects.count(), 1)
         self.assertContains(response2, "already booked", status_code=200)
 
     def test_user_book_two_time_slots_same_day(self):
         self.client.login(username=self.username, password=self.password)
 
-        # book 9:00 - 10:00
+        
         response1 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
         self.assertEqual(Booking.objects.count(), 1)
         self.assertContains(response1,f"Booking confirmed for {self.date} {self.start_time}-{self.end_time}",status_code=200)
@@ -97,23 +97,23 @@ class BookingTestCase(TestCase):
             "start_time": "10:00",
             "end_time": "11:00",
         }
-        # book 10:00 - 11:00
+        
         response2 = self.client.post(reverse("booking_page", args=[self.room.room_id]), second_data)
 
-        # no new booking + got already book response
+       
         self.assertEqual(Booking.objects.count(), 1)
         self.assertContains(response2, f"You already booked on {self.date}", status_code=200)
 
     def test_user_book_same_time_two_days(self):
         self.client.login(username=self.username, password=self.password)
 
-        # book today
+       
         response1 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
         self.assertEqual(Booking.objects.count(), 1)
         self.assertContains(response1,f"Booking confirmed for {self.date} {self.start_time}-{self.end_time}",status_code=200)
 
 
-        # book tomorrow
+        
         tmr_date = (date.today() + timedelta(days=1)).isoformat()
         second_data = {
             "action": "book",
@@ -123,23 +123,23 @@ class BookingTestCase(TestCase):
         }
         response2 = self.client.post(reverse("booking_page", args=[self.room.room_id]), second_data)
 
-        # Booking ต้องเพิ่มเป็น 2 record
+        
         self.assertContains(response2,f"Booking confirmed for {tmr_date} {self.start_time}-{self.end_time}",status_code=200)
         self.assertEqual(Booking.objects.count(), 2)
 
     def test_cancel_booking(self):
-        self.client.login(username=self.username, password=self.password) #login require
+        self.client.login(username=self.username, password=self.password) 
 
-        # create booking
+       
         response1 = self.client.post(reverse("booking_page", args=[self.room.room_id]), self.data)
         self.assertEqual(Booking.objects.count(), 1)
         self.assertContains(response1,f"Booking confirmed for {self.date} {self.start_time}-{self.end_time}",status_code=200)
 
-        booking = Booking.objects.first() # get booking_id
+        booking = Booking.objects.first() 
 
-        # cancel booking
+       
         response2 = self.client.post(reverse("cancel_booking", args=[booking.id]))
         
-        self.assertEqual(Booking.objects.count(), 0) # check in database
-        self.assertRedirects(response2, reverse("my_booking")) # check redirect
+        self.assertEqual(Booking.objects.count(), 0) 
+        self.assertRedirects(response2, reverse("my_booking")) 
 
