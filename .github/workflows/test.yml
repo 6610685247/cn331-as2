@@ -18,8 +18,4 @@ jobs:
       - run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-<<<<<<< HEAD
-          python ./manage.py test
-=======
           python manage.py test
->>>>>>> a0782d5c83d150192eb0d834900012b7edb381d3

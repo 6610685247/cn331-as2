@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Profile
+from django.test import TestCase, Client
 import io
 import sys
 
@@ -64,3 +65,30 @@ class AccountsTestCase(TestCase):
         self.assertRedirects(response, reverse("home"))
         response = self.client.get(reverse("home"))
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+
+# class AdminDashboardTest(TestCase):
+#     def setUp(self):
+#         self.client = Client()
+#         # สร้าง admin user
+#         self.admin_user = User.objects.create_superuser(username="admin", password="pass", email="admin@example.com")
+#         self.client.login(username="admin", password="pass")
+
+#     def test_add_room(self):
+#         data = {
+#             "add_room": "1",          # ต้องมี key 'add_room'
+#             "room_id": 101,
+#             "room_name": "Test Room",
+#             "cap": 50
+#         }
+#         response = self.client.post(reverse("admin_dashboard"), data)
+
+#         # ตรวจสอบว่า room ถูกสร้าง
+#         room = Room.objects.get(room_id=101)
+#         self.assertEqual(room.room_name, "Test Room")
+#         self.assertEqual(room.cap, 50)
+#         self.assertEqual(room.floor, 1)  # floor = room_id[0]
+
+#         # ตรวจสอบ success message
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertTrue(any("added successfully" in str(m) for m in messages))
