@@ -79,20 +79,20 @@ class AdminDashboardTest(TestCase):
 
     def test_add_room(self):
         data = {
-            "add_room": "1",          # ต้องมี key 'add_room'
+            "add_room": "1",         
             "room_id": self.room_id,
             "room_name": "Test Room",
             "cap": 50
         }
         response = self.client.post(reverse("dashboard"), data)
 
-        # ตรวจสอบว่า room ถูกสร้าง
+       
         room = Room.objects.get(room_id=self.room_id)
         self.assertEqual(room.room_name, "Test Room")
         self.assertEqual(room.cap, 50)
-        self.assertEqual(room.floor, 9)  # floor = room_id[0]
+        self.assertEqual(room.floor, 9)  
 
-        # ตรวจสอบ success message
+       
         messages = list(get_messages(response.wsgi_request))
         self.assertTrue(f"Room {self.room_id} added successfully.")
 
