@@ -28,25 +28,25 @@ class BookingTestCase(TestCase):
         }
 
 
-def test_booking_success(self):
-    self.start_time_value = datetime.strptime("09:00", "%H:%M").time()
-    self.end_time_value = datetime.strptime("10:00", "%H:%M").time()
-
-    start = timezone.make_aware(datetime.combine(self.date, self.start_time_value))
-    end = timezone.make_aware(datetime.combine(self.date, self.end_time_value))
-
-    booking = Booking.objects.create(
-        room=self.room,
-        user=self.user,
-        start_time=start,
-        end_time=end
-    )
-
-    self.assertEqual(Booking.objects.count(), 1)
-    self.assertEqual(booking.room, self.room)
-    self.assertEqual(booking.user, self.user)
-    self.assertEqual(booking.start_time.time(), self.start_time_value)
-    self.assertEqual(booking.end_time.time(), self.end_time_value)
+    def test_booking_success(self):
+        self.start_time_value = datetime.strptime("09:00", "%H:%M").time()
+        self.end_time_value = datetime.strptime("10:00", "%H:%M").time()
+    
+        start = timezone.make_aware(datetime.combine(self.date, self.start_time_value))
+        end = timezone.make_aware(datetime.combine(self.date, self.end_time_value))
+    
+        booking = Booking.objects.create(
+            room=self.room,
+            user=self.user,
+            start_time=start,
+            end_time=end
+        )
+    
+        self.assertEqual(Booking.objects.count(), 1)
+        self.assertEqual(booking.room, self.room)
+        self.assertEqual(booking.user, self.user)
+        self.assertEqual(booking.start_time.time(), self.start_time_value)
+        self.assertEqual(booking.end_time.time(), self.end_time_value)
     
     def test_user_book_same_slot_same_day(self):
         
