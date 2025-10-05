@@ -6,6 +6,19 @@ from django.utils import timezone
 from datetime import datetime, date, timedelta
 from django.urls import reverse
 
+class BookingModelTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username="str_test_user")
+        Profile.objects.create(user=self.user, studentid="987654321")
+        self.room = Room.objects.create(room_id=1000, room_name="Test Room", cap=20, floor=1)
+
+    def test_booking_str_method(self):
+        start = timezone.make_aware(datetime.combine(date.today(), datetime.strptime("09:00", "%H:%M").time()))
+        end = timezone.make_aware(datetime.combine(date.today(), datetime.strptime("10:00", "%H:%M").time()))
+        booking = Booking.objects.create(room=self.room, user=self.user, start_time=start, end_time=end)
+
+        expected_str = f"{self.room.room_id} is booked by {self.user} ({start} - {end})"
+        self.assertEqual(str(booking), expected_str)
 
 class BookingTestCase(TestCase):
     def setUp(self):
