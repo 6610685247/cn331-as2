@@ -1,4 +1,4 @@
-name: Unit Tests
+name: Django Unit Tests and Coverage Report
 
 on:
   push:
@@ -7,17 +7,25 @@ on:
 
 jobs:
   test:
+    name: Run Django Tests
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3      
-      - uses: actions/setup-python@v4  
+      - name: Checkout Repository
+        uses: actions/checkout@v3      
+
+      - name: Set up Python
+        uses: actions/setup-python@v4  
         with:
           python-version: "3.11"
 
-      - run: |
+      - name: Install Dependencies
+        run: |
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install coverage
+
+      - name: Run Unit Tests with Coverage
+        run: |
           coverage run manage.py test
           coverage report
