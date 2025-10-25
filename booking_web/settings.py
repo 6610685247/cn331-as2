@@ -3,8 +3,7 @@ from pathlib import Path
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-this-secret-key")
+SECRET_KEY = "!z3v!4#fq+*tdv=qn83wknp=0tt^bappj#jlg5-rifpgzux%!2"
 DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = ['*']
@@ -52,9 +51,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "booking_web.wsgi.application"
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if DATABASE_URL:
+
+if not os.environ.get('DEBUG', 'False') == 'True':
     DATABASES ={'default': dj_database_url.parse('postgresql://lnynano:ORw9NJ41Ra4b32BNPowqNgXHr5P3TIvb@dpg-d3uf450dl3ps73f3tjbg-a/booking_db_fyzp')
 
 }
