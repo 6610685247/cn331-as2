@@ -4,9 +4,9 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "default-key")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-this-secret-key")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "*").split(",")
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -51,21 +51,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "booking_web.wsgi.application"
 
-DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql://dbbooking_web_7cq1_user:n6tilk9S4c9MqqwUW1nm1ckLrkxMZPqb@dpg-d3udiaje5dus739k056g-a/dbbooking_web_7cq1"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if DEBUG:
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=not DEBUG,
+        )
+    }
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
-    }
-else:
-    DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL)
     }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -74,8 +75,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-
-LOGIN_URL = "login"
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
@@ -87,5 +86,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = "login"
 
 TAILWIND_APP_NAME = "theme"
