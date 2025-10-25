@@ -92,3 +92,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "login"
 
 TAILWIND_APP_NAME = "theme"
+from django.conf import settings
+print(settings.DATABASES['default']['ENGINE'])
