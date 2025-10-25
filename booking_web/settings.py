@@ -52,11 +52,17 @@ TEMPLATES = [
 WSGI_APPLICATION = "booking_web.wsgi.application"
 
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
-if not os.environ.get('DEBUG', 'False') == 'True':
-    DATABASES ={'default': dj_database_url.parse('postgresql://lnynano:ORw9NJ41Ra4b32BNPowqNgXHr5P3TIvb@dpg-d3uf450dl3ps73f3tjbg-a/booking_db_fyzp')
+if DATABASE_URL:
 
-}
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True
+        )
+    }
 else:
     DATABASES = {
         "default": {
